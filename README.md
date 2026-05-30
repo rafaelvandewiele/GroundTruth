@@ -2,23 +2,39 @@
 
 Every claim you see — in the news, on social media, from the mouth of a politician — live fact checked in 3 seconds, for everyone in the world, free of charge.
 
+## Gratis tech stack (geen betalingen vereist)
+
+| Onderdeel | Dienst | Limiet |
+|-----------|--------|--------|
+| AI-model | Google Gemini 1.5 Flash | 1500 requests/dag gratis |
+| Webzoeken | DuckDuckGo (scraping) | Geen limiet |
+| Database | Supabase | Gratis tier |
+| Hosting | Railway | Gratis tot $5/maand gebruik |
+
 ## Project Structure
 
 ```
 groundtruth/
-├── backend/          # FastAPI Python backend
+├── backend/
 │   ├── app/
-│   │   ├── api/      # Route handlers
-│   │   ├── core/     # Config, settings
-│   │   ├── models/   # Pydantic models
-│   │   └── services/ # AI, search, cache logic
+│   │   ├── api/routes.py
+│   │   ├── core/config.py
+│   │   ├── models/schemas.py
+│   │   └── services/
+│   │       ├── ai_service.py        # Gemini Flash
+│   │       ├── search_service.py    # DuckDuckGo
+│   │       ├── cache_service.py     # Supabase
+│   │       ├── fact_check_service.py
+│   │       └── language_service.py
+│   ├── main.py
 │   ├── requirements.txt
-│   └── main.py
-├── app/              # React Native (Expo) mobile app
+│   ├── Dockerfile
+│   ├── supabase_schema.sql
+│   └── .env.example
+├── app/                             # React Native (Expo)
 │   ├── src/
 │   │   ├── screens/
 │   │   ├── components/
-│   │   ├── hooks/
 │   │   └── services/
 │   ├── App.tsx
 │   └── package.json
@@ -27,17 +43,20 @@ groundtruth/
 
 ## Quick Start
 
-### Backend
+### Stap 1: Gratis Gemini API-sleutel ophalen
+Ga naar https://aistudio.google.com → "Get API key" → gratis, geen creditcard nodig.
+
+### Stap 2: Backend
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env      # fill in your API keys
+cp .env.example .env       # vul je Gemini-sleutel en Supabase-keys in
 uvicorn main:app --reload
 ```
 
-### App
+### Stap 3: App
 ```bash
 cd app
 npm install
@@ -46,8 +65,7 @@ npx expo start
 
 ## Environment Variables (backend/.env)
 ```
-ANTHROPIC_API_KEY=your_key_here
-PERPLEXITY_API_KEY=your_key_here
-SUPABASE_URL=your_supabase_url
-SUPABASE_SERVICE_KEY=your_supabase_service_key
+GEMINI_API_KEY=AIza...
+SUPABASE_URL=https://xxxx.supabase.co
+SUPABASE_SERVICE_KEY=eyJ...
 ```
